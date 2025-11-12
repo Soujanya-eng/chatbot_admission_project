@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDA College - Admissions Chatbot Project</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="top-notice">CEK ACTE IDEA LAB TENDER NOTICE <a href="#">Click here to view</a></div>
+        <div class="logo-area">
+            
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <ul>
+            <li><a href="#">HOME</a></li>
+            <li><a href="#">ADMISSIONS</a></li>
+            <li><a href="#">DEPARTMENTS</a></li>
+            <li><a href="#">RESEARCH</a></li>
+        </ul>
+        <div class="teqip">TEQIP-III</div>
+    </nav>
+
+    <main class="main-content">
+        <div class="banner-image">
+            
+        </div>
+
+        <section class="info-section">
+            <h1>PDA College of Engineering Admissions Chatbot Demo</h1>
+            <p>This is the landing page for the college. The floating chatbot on the left uses Python (Flask + NLTK) to answer admission questions.</p>
+            <p style="height: 800px; padding-top: 50px;">Scrollable content ensures the floating chatbot stays visible regardless of page length.</p>
+        </section>
+    </main>
+
+    <div class="chatbot-container" id="chatbot-float">
+        <div class="chatbot-header">
+            <h3>Admission Bot 🤖</h3>
+            <button class="close-btn" id="close-btn">X</button>
+        </div>
+        <div class="chatbot-messages" id="chatbot-messages">
+            <p class="bot-message">Hello! I am your PDA Admission Assistant. How can I help you today?</p>
+        </div>
+        <input type="text" class="chatbot-input" id="chatbot-input" placeholder="Ask your admission query...">
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
