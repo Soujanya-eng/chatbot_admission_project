@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDA College - Pure Python Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <main class="main-content">
+        <h1>PDA College Admissions Demo (Pure Python)</h1>
+        <p>This application demonstrates a server-side chatbot where **Python (Flask/NLTK) handles all logic, input, and output**, with no custom JavaScript. Note that every input causes a page reload.</p>
+        
+        <div style="height: 1000px; padding-top: 50px;">Scrollable content placeholder...</div>
+    </main>
+
+    <div class="chatbot-container">
+        <div class="chatbot-header"><h3>Pure Python Bot</h3></div>
+        <div class="chatbot-messages">
+            {% for message in chat_history %}
+                <div class="chat-message {{ message.sender }}-message">
+                    {{ message.text | safe }}
+                </div>
+            {% endfor %}
+        </div>
+        
+        <form method="GET" action="/" class="chatbot-form">
+            <input type="text" name="query" class="chatbot-input" placeholder="Ask your query..." required autofocus>
+            <button type="submit" class="submit-btn">Send</button>
+        </form>
+    </div>
+
+</body>
+</html>

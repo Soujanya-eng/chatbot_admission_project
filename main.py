@@ -1,78 +1,88 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+# File: main.py (Top section)
+
+from flask import Flask, request, render_template
 import nltk
+# NEW IMPORTS: Directly import the required components
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+from nltk.corpus import wordnet as wn 
+# You need to initialize the WordNet resource early
+from nltk.corpus.util import LazyCorpusLoader
 
-# --- Initialization ---
-app = Flask(__name__)
-CORS(app) # Enable CORS for all routes
+app = Flask(__name__) 
 
-# Initialize NLTK tools
-lemmatizer = WordNetLemmatizer()
+# --- Initialization & NLTK Setup (MODIFIED) ---
 
-# --- 1. KNOWLEDGE BASE (Using specific PDA College details) ---
+# Reinitialize WordNet to avoid the 'subdir' error
+# This line often resolves the conflict by forcing the correct access method
+wn = LazyCorpusLoader(
+    'wordnet', nltk.corpus.WordNetCorpusReader, 
+    ['NOUN', 'VERB', 'ADJ', 'ADV']
+)
+
+try:
+    # Initialize the lemmatizer using the correctly set up resource
+    lemmatizer = WordNetLemmatizer()
+except LookupError:
+    print("NLTK data (punkt, wordnet) not found. Please run the download command.")
+    exit()
+
+# The rest of your main.py code is UNCHANGED (chatbot_logic, ADMISSION_FACTS, etc.)
+
+# --- KNOWLEDGE BASE (Pure Python Data Structure) ---
 ADMISSION_FACTS = {
-    "GREETING": "Hello! I am the PDA College Admission Assistant. I can help with information on **Courses, Eligibility, and Fees**. How can I assist you?",
-    
-    "BE_COURSES": "PDA College offers **11 B.E. programs** including Civil, Mechanical, EEE, ECE, CSE, AI & ML, Computer Science & Design, and more. Which stream interests you?",
-    
-    "PG_COURSES": "We offer 10 M.Tech programs like Structural Engineering, Thermal Power Engineering, and Computer Science & Engineering.",
-
-    "ELIGIBILITY_BE": "For the B.E. program, candidates must have passed **10+2 with a minimum of 45% aggregate** (40% for reserved categories) in PCM. Admission is through **KCET/COMEDK UGET** scores.",
-    
-    "FEES": "Fees vary by course and quota. The total tuition fee for B.E. ranges from **₹1.6 Lakh to ₹7.4 Lakh**. Please check the official 'Fee Structure' link on the college website for the latest breakdown.",
-    
-    "CONTACT": "You can reach the Admissions Office directly at **Ph: 08472 - 224360** (9 AM to 5 PM).",
-
-    "DEFAULT": "I apologize, I can only assist with admission queries right now. Try asking about **Courses, Eligibility, or Fees**."
+    "GREETING": "Hello! I am the PDA College Admission Assistant, how can i help you. Ask me about Courses, Eligibility, or Fees.",
+    "BE_COURSES": "PDA College offers 11 B.E. programs, including Civil, Mechanical, EEE, ECE, CSE, AI & ML, and others.",
+    "ELIGIBILITY_BE": "For the B.E. program, candidates need 10+2 with Physics, Math, and a science subject, achieving 45% aggregate (40% for reserved categories).",
+    "FEES": "B.E. tuition ranges from ₹1.6 Lakh to ₹7.4 Lakh depending on the quota.",
+    "CONTACT": "You can reach the Admissions Office directly at Ph: 08472 - 224360.",
+    "DEFAULT": "I apologize, I can only assist with basic admission queries right now. Please try asking about Courses, Eligibility, or Fees."
 }
-
-# --- 2. KEYWORD MAPPING (Base forms for Lemmatizer) ---
 KEYWORD_MAP = {
-    'hello': 'GREETING', 'hi': 'GREETING', 'greet': 'GREETING',
-    'course': 'BE_COURSES', 'branch': 'BE_COURSES', 'ug': 'BE_COURSES', 'be': 'BE_COURSES',
-    'pg': 'PG_COURSES', 'm.tech': 'PG_COURSES',
-    'fee': 'FEES', 'cost': 'FEES', 'money': 'FEES',
-    'eligible': 'ELIGIBILITY_BE', 'criteria': 'ELIGIBILITY_BE', 'admission': 'ELIGIBILITY_BE', 
-    'kcet': 'ELIGIBILITY_BE', 'comedk': 'ELIGIBILITY_BE',
-    'contact': 'CONTACT', 'phone': 'CONTACT', 'call': 'CONTACT', 'email': 'CONTACT',
+    'hello': 'GREETING', 'hi': 'GREETING', 'course': 'BE_COURSES', 
+    'branch': 'BE_COURSES', 'be': 'BE_COURSES', 'fee': 'FEES', 
+    'eligible': 'ELIGIBILITY_BE', 'criteria': 'ELIGIBILITY_BE', 
+    'admission': 'ELIGIBILITY_BE', 'contact': 'CONTACT', 'phone': 'CONTACT'
 }
 
-# --- 3. CHATBOT LOGIC FUNCTION ---
+# --- CHATBOT LOGIC FUNCTION (Pure Python NLP) ---
 def chatbot_logic(query):
     query_lower = query.lower()
-    
-    # NLTK Processing: Tokenize and Lemmatize the query
     tokens = word_tokenize(query_lower)
+    # Lemmatization: Reduce words to their root form
     lemmas = [lemmatizer.lemmatize(word) for word in tokens]
 
-    # Check for keywords in the lemmatized list
     for lemma in lemmas:
         if lemma in KEYWORD_MAP:
-            fact_key = KEYWORD_MAP[lemma]
-            # Handle specific priority for PG queries
-            if fact_key == 'PG_COURSES' and 'ug' not in query_lower:
-                return ADMISSION_FACTS['PG_COURSES']
-            
-            return ADMISSION_FACTS[fact_key]
+            return ADMISSION_FACTS[KEYWORD_MAP[lemma]]
     
     return ADMISSION_FACTS['DEFAULT']
 
-# --- 4. FLASK API ENDPOINT ---
-# NOTE: The route is clean and simple. The POST method is explicitly defined.
-@app.route('/api/chat', methods=['POST'])
-def chat():
-    data = request.get_json()
-    user_query = data.get('query', '')
+# --- FLASK ROUTE: Handles Page Load, Input, and Output ---
+@app.route('/')
+def index():
+    # Retrieve chat query from URL parameters (due to HTML form submission)
+    user_query = request.args.get('query', '') 
     
-    response_text = chatbot_logic(user_query)
-    
-    # Return the response as JSON
-    return jsonify({'response': response_text})
+    # Initialize chat history
+    history = [
+        {"sender": "bot", "text": ADMISSION_FACTS['GREETING']}
+    ]
 
-# --- 5. RUN THE SERVER ---
+    if user_query:
+        # Add user query to history
+        history.append({"sender": "user", "text": user_query})
+        
+        # Process the query using pure Python logic
+        bot_response = chatbot_logic(user_query)
+        
+        # Add bot response to history
+        history.append({"sender": "bot", "text": bot_response})
+
+    # Render the template, passing the complete chat history to be displayed
+    return render_template('index.html', chat_history=history)
+
+# --- RUN THE SERVER ---
 if __name__ == '__main__':
-    # Run Flask on port 5000
-    print("Starting Flask server on http://127.0.0.1:5000/")
+    print("Starting Pure Python Chatbot Server (No JavaScript).")
     app.run(debug=True, port=5000)
