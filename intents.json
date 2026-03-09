@@ -1,0 +1,86 @@
+{
+ "intents":[
+
+  {
+   "tag":"greeting",
+   "patterns":["hi","hello","hey","good morning","good evening"],
+   "responses":[
+   "Hello! Welcome to PDA College Admission Assistant. How can I help you?",
+   "Hi there! Ask me about departments, placements, research centers or contact details."
+   ]
+  },
+
+  {
+   "tag":"address",
+   "patterns":["college address","location of college","where is pda college"],
+   "responses":[
+   "PDA College of Engineering is located in Kalaburagi (Gulbarga), Karnataka, India."
+   ]
+  },
+
+  {
+   "tag":"history",
+   "patterns":["college history","about pda college","when was pda college established"],
+   "responses":[
+   "PDA College of Engineering was established in 1958 and is one of the oldest engineering colleges in Karnataka."
+   ]
+  },
+
+  {
+   "tag":"departments",
+   "patterns":["departments","courses offered","branches in college"],
+   "responses":[
+   "Departments include Computer Science, Artificial Intelligence, Electronics, Mechanical, Civil, Electrical and Information Science."
+   ]
+  },
+
+  {
+   "tag":"gold",
+   "patterns":["gold medalists","rank holders","top students"],
+   "responses":[
+   "PDA College has produced many VTU gold medalists and university rank holders."
+   ]
+  },
+
+  {
+   "tag":"placements",
+   "patterns":["placements","placement facilities","companies visiting"],
+   "responses":[
+   "PDA College has a dedicated placement cell. Companies like TCS, Infosys, Wipro and Accenture visit for campus recruitment."
+   ]
+  },
+
+  {
+   "tag":"research",
+   "patterns":["research centers","phd centers","research facilities"],
+   "responses":[
+   "PDA College has VTU approved research centers in Computer Science, Mechanical, Civil and Electronics Engineering."
+   ]
+  },
+
+  {
+   "tag":"contact",
+   "patterns":["contact number","helpline","phone number"],
+   "responses":[
+   "You can contact PDA College at +91-8472-224360."
+   ]
+  },
+
+  {
+   "tag":"email",
+   "patterns":["email id","college email","contact email"],
+   "responses":[
+   "You can reach the college via email at info@pdaengg.com."
+   ]
+  },
+
+  {
+   "tag":"bye",
+   "patterns":["bye","goodbye","exit"],
+   "responses":[
+   "Thank you for visiting PDA Admission Assistant. Have a great day!"
+   ]
+  }
+
+ ]
+}

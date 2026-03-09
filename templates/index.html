@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>PDA College Admission Assistant</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="logo-section">
+
+<img src="/static/logo.jpg" class="logo">
+
+<div>
+<h2>P.D.A. COLLEGE OF ENGINEERING</h2>
+<p>An Autonomous Institution | Affiliated to VTU Belagavi</p>
+</div>
+
+</div>
+
+</header>
+
+<nav class="navbar">
+
+<ul>
+<li>HOME</li>
+<li>ABOUT US</li>
+<li>ADMISSIONS</li>
+<li>DEPARTMENTS</li>
+<li>ACADEMIC</li>
+<li>PLACEMENTS</li>
+<li>RESEARCH</li>
+<li>CONTACT</li>
+</ul>
+
+</nav>
+
+<section class="hero"></section>
+
+<div class="chat-button" onclick="toggleChat()">💬</div>
+
+<div class="chatbot" id="chatbot">
+
+<div class="chat-header">
+🤖 PDA Admission Assistant
+<span onclick="toggleChat()">✖</span>
+</div>
+
+<div id="chatbox">
+
+<div class="message bot">
+Hello 👋  
+Welcome to PDA College Admission Assistant.  
+Ask me about address, departments, placements or contact details.
+</div>
+
+</div>
+
+<div class="chat-input">
+<input id="userInput" placeholder="Ask something..." autocomplete="off">
+<button onclick="sendMessage()">➤</button>
+</div>
+
+</div>
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>
